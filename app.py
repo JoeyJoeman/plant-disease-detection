@@ -31,10 +31,9 @@ if not os.path.exists(local_model_path):
 
 # Initialize and load model
 model = ViTForImageClassification.from_pretrained(
-    "google/vit-base-patch16-224",
-    num_labels=len(class_names),
-    ignore_mismatched_sizes=True
+    'JoeyJoeman/plantvillage-vit'
 )
+
 model.load_state_dict(torch.load(local_model_path, map_location=device))
 model.to(device)
 model.eval()
