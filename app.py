@@ -46,17 +46,8 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=feature_extractor.image_mean, std=feature_extractor.image_std)
 ])
 
-# Helper: Color based on confidence
-def confidence_color(confidence):
-    if confidence > 0.8:
-        return "🟢"  # Green
-    elif confidence > 0.5:
-        return "🟠"  # Orange
-    else:
-        return "🔴"  # Red
-
 # Streamlit UI
-st.title("Plant Disease Detection (ViT)")
+st.title("Plant Disease Detector (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
@@ -77,8 +68,6 @@ if uploaded_file is not None:
     for i in range(3):
         pred_class = class_names[top_idxs[0][i].item()]
         pred_prob = top_probs[0][i].item()
-        color_icon = confidence_color(pred_prob)
         
-        st.write(f"{color_icon} **{pred_class}** - {pred_prob:.2%} confidence")
-        st.progress(pred_prob)
-
+        st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
+        st.progress(pred_prob)  # Adds a progress bar
