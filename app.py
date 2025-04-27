@@ -21,7 +21,7 @@ class_names = [
 feature_extractor = ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224")
 
 # Download model if not already downloaded
-model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/blob/main/vit-plantvillage.pth"
+model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/resolve/main/vit-plantvillage.pth"
 local_model_path = "vit-plantvillage.pth"
 
 if not os.path.exists(local_model_path):
