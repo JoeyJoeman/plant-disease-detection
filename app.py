@@ -47,7 +47,7 @@ preprocess = transforms.Compose([
 ])
 
 # Streamlit UI
-st.title("Plant Disease Classifier (ViT)")
+st.title("Plant Disease Detector (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
