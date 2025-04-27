@@ -21,7 +21,7 @@ class_names = [
 feature_extractor = ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224")
 
 # Download model if not already downloaded
-model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/resolve/main/vit-plantvillage.pth"
+model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/blob/main/vit-plantvillage.pth"
 local_model_path = "vit-plantvillage.pth"
 
 if not os.path.exists(local_model_path):
@@ -47,7 +47,7 @@ preprocess = transforms.Compose([
 ])
 
 # Streamlit UI
-st.title("Plant Disease Detector (ViT)")
+st.title("🌿 Plant Disease Classifier (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
@@ -71,3 +71,5 @@ if uploaded_file is not None:
         
         st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
         st.progress(pred_prob)  # Adds a progress bar
+
+
