@@ -31,9 +31,10 @@ if not os.path.exists(local_model_path):
 
 # Initialize and load model
 model = ViTForImageClassification.from_pretrained(
-    'JoeyJoeman/plantvillage-vit'
+    "google/vit-base-patch16-224",
+    num_labels=len(class_names),
+    ignore_mismatched_sizes=True
 )
-
 model.load_state_dict(torch.load(local_model_path, map_location=device))
 model.to(device)
 model.eval()
@@ -45,8 +46,17 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=feature_extractor.image_mean, std=feature_extractor.image_std)
 ])
 
+# Helper: Color based on confidence
+def confidence_color(confidence):
+    if confidence > 0.8:
+        return "🟢"  # Green
+    elif confidence > 0.5:
+        return "🟠"  # Orange
+    else:
+        return "🔴"  # Red
+
 # Streamlit UI
-st.title("🌿 Plant Disease Classifier (ViT)")
+st.title("Plant Disease Detection (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
@@ -67,8 +77,8 @@ if uploaded_file is not None:
     for i in range(3):
         pred_class = class_names[top_idxs[0][i].item()]
         pred_prob = top_probs[0][i].item()
+        color_icon = confidence_color(pred_prob)
         
-        st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
-        st.progress(pred_prob)  # Adds a progress bar
-
+        st.write(f"{color_icon} **{pred_class}** - {pred_prob:.2%} confidence")
+        st.progress(pred_prob)
 
