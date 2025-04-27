@@ -47,7 +47,7 @@ preprocess = transforms.Compose([
 ])
 
 # Streamlit UI
-st.title("Plant Disease Detection (ViT)")
+st.title("Plant Disease Classifier (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
 
@@ -69,5 +69,5 @@ if uploaded_file is not None:
         pred_class = class_names[top_idxs[0][i].item()]
         pred_prob = top_probs[0][i].item()
         
-        st.write(f"{color_icon} **{pred_class}** - {pred_prob:.2%} confidence")
-        st.progress(pred_prob)
+        st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
+        st.progress(pred_prob)  # Adds a clean progress bar
