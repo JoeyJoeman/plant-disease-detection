@@ -5,9 +5,10 @@ from torchvision import transforms
 from PIL import Image
 from transformers import ViTForImageClassification, ViTFeatureExtractor
 
-# FORCE DELETE old broken model file if it exists
+# Paths
 local_model_path = "vit-plantvillage.pth"
 
+# Remove old broken model file if exists
 if os.path.exists(local_model_path):
     os.remove(local_model_path)
     print("Deleted old vit-plantvillage.pth file.")
@@ -40,23 +41,27 @@ if not os.path.exists(local_model_path):
     else:
         raise Exception(f"Failed to download model. Status code: {response.status_code}")
 
-# Initialize and load model
+# Initialize model
 model = ViTForImageClassification.from_pretrained(
-    local_model_path,
+    "google/vit-base-patch16-224",
     num_labels=len(class_names),
     ignore_mismatched_sizes=True
 )
+
+# Load your fine-tuned weights (.pth)
+state_dict = torch.load(local_model_path, map_location=device)
+model.load_state_dict(state_dict)
 model.to(device)
 model.eval()
 
-# Define preprocessing
+# Preprocessing
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=feature_extractor.image_mean, std=feature_extractor.image_std)
 ])
 
-# Streamlit UI
+# Streamlit app
 st.title("Plant Disease Detector (ViT)")
 
 uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", "png"])
