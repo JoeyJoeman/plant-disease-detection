@@ -28,20 +28,24 @@ class_names = [
 feature_extractor = ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224")
 
 # Download model if not already downloaded
-model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/blob/main/vit-plantvillage.pth"
+model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/resolve/main/vit-plantvillage.pth"
 
 if not os.path.exists(local_model_path):
     import requests
-    with open(local_model_path, "wb") as f:
-        f.write(requests.get(model_url).content)
+    response = requests.get(model_url)
+    if response.status_code == 200:
+        with open(local_model_path, "wb") as f:
+            f.write(response.content)
+        print("Model downloaded successfully.")
+    else:
+        raise Exception(f"Failed to download model. Status code: {response.status_code}")
 
 # Initialize and load model
 model = ViTForImageClassification.from_pretrained(
-    "google/vit-base-patch16-224",
+    local_model_path,
     num_labels=len(class_names),
     ignore_mismatched_sizes=True
 )
-model.load_state_dict(torch.load(local_model_path, map_location=device))
 model.to(device)
 model.eval()
 
@@ -60,20 +64,20 @@ uploaded_file = st.file_uploader("Upload a leaf image...", type=["jpg", "jpeg", 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_container_width=True)
-    
+
     # Preprocess
     input_tensor = preprocess(image).unsqueeze(0).to(device)
-    
+
     # Predict
     with torch.no_grad():
         outputs = model(input_tensor)
         probs = torch.softmax(outputs.logits, dim=1)
         top_probs, top_idxs = probs.topk(3, dim=1)
-    
+
     st.subheader("Top Predictions:")
     for i in range(3):
         pred_class = class_names[top_idxs[0][i].item()]
         pred_prob = top_probs[0][i].item()
-        
+
         st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
         st.progress(pred_prob)
