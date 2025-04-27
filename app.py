@@ -68,7 +68,6 @@ if uploaded_file is not None:
     for i in range(3):
         pred_class = class_names[top_idxs[0][i].item()]
         pred_prob = top_probs[0][i].item()
-        color_icon = confidence_color(pred_prob)
         
         st.write(f"{color_icon} **{pred_class}** - {pred_prob:.2%} confidence")
         st.progress(pred_prob)
