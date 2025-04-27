@@ -46,15 +46,6 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=feature_extractor.image_mean, std=feature_extractor.image_std)
 ])
 
-# Helper: Color based on confidence
-def confidence_color(confidence):
-    if confidence > 0.8:
-        return "🟢"  # Green
-    elif confidence > 0.5:
-        return "🟠"  # Orange
-    else:
-        return "🔴"  # Red
-
 # Streamlit UI
 st.title("Plant Disease Detection (ViT)")
 
