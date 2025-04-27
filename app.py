@@ -5,6 +5,13 @@ from torchvision import transforms
 from PIL import Image
 from transformers import ViTForImageClassification, ViTFeatureExtractor
 
+# FORCE DELETE old broken model file if it exists
+local_model_path = "vit-plantvillage.pth"
+
+if os.path.exists(local_model_path):
+    os.remove(local_model_path)
+    print("Deleted old vit-plantvillage.pth file.")
+
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -21,8 +28,7 @@ class_names = [
 feature_extractor = ViTFeatureExtractor.from_pretrained("google/vit-base-patch16-224")
 
 # Download model if not already downloaded
-model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/resolve/main/vit-plantvillage.pth"
-local_model_path = "vit-plantvillage.pth"
+model_url = "https://huggingface.co/JoeyJoeman/plantvillage-vit/blob/main/vit-plantvillage.pth"
 
 if not os.path.exists(local_model_path):
     import requests
@@ -35,7 +41,7 @@ model = ViTForImageClassification.from_pretrained(
     num_labels=len(class_names),
     ignore_mismatched_sizes=True
 )
-model.load_state_dict(torch.load(local_model_path, map_location=device, weights_only=False))
+model.load_state_dict(torch.load(local_model_path, map_location=device))
 model.to(device)
 model.eval()
 
@@ -70,4 +76,4 @@ if uploaded_file is not None:
         pred_prob = top_probs[0][i].item()
         
         st.write(f"**{pred_class}** - {pred_prob:.2%} confidence")
-        st.progress(pred_prob)  # Adds a progress bar
+        st.progress(pred_prob)
