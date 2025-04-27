@@ -41,7 +41,7 @@ model = ViTForImageClassification.from_pretrained(
     num_labels=len(class_names),
     ignore_mismatched_sizes=True
 )
-model.load_state_dict(torch.load(local_model_path, map_location=device, weights_only=False))
+model.load_state_dict(torch.load(local_model_path, map_location=device))
 model.to(device)
 model.eval()
 
