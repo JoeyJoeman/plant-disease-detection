@@ -58,7 +58,7 @@ model = ViTForImageClassification.from_pretrained(
     ignore_mismatched_sizes=True
 )
 
-# Load your fine-tuned weights (.pth)
+# Load fine-tuned weights (.pth)
 state_dict = torch.load(local_model_path, map_location=device)
 model.load_state_dict(state_dict)
 model.to(device)
