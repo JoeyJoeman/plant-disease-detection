@@ -8,6 +8,7 @@ from transformers import ViTForImageClassification, ViTFeatureExtractor
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# Class names (make sure this matches your training order)
 class_names = [
     'Apple___Apple_scab',
     'Apple___Black_rot',
@@ -64,14 +65,13 @@ if not os.path.exists(local_model_path):
 # Initialize model architecture with correct number of classes
 model = ViTForImageClassification.from_pretrained(
     "google/vit-base-patch16-224",
-    num_labels=len(class_names),
+    num_labels=38,
     ignore_mismatched_sizes=True
 )
 
-# Load saved weights into model
+# Load trained weights
 state_dict = torch.load(local_model_path, map_location=device)
 model.load_state_dict(state_dict)
-
 model.to(device)
 model.eval()
 
